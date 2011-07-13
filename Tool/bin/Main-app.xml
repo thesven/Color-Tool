@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?><application xmlns="http://ns.adobe.com/air/application/1.5.3" minimumPatchLevel="0">
+<!-- AIR Application Descriptor File. See http://www.adobe.com/go/learn_air_1.0_application_descriptor_en. -->
+	<id>Main</id>
+	<name>ColorPickingTool</name>
+	<version>1.0</version>
+	<filename>Main</filename>
+	<description>
+		<text xml:lang="en">An application to read GIF color tables, and use their data to create color pallets</text>
+	</description>
+	<copyright>Copyright 2009, Example Co., Inc.</copyright>
+	<initialWindow>
+		<content>Main.swf</content>
+		<title>GIF Color Picker</title>
+		<systemChrome>standard</systemChrome>
+		<transparent>false</transparent>
+		<visible>true</visible>
+		<minimizable>true</minimizable>
+		<maximizable>true</maximizable>
+		<resizable>false</resizable>
+		<width>1024</width>
+		<height>768</height>
+		<x>0</x>
+		<y>0</y>
+		<minSize>1024 768</minSize>
+		<maxSize>1024 768</maxSize>
+	</initialWindow>
+	<installFolder>color/color_picker</installFolder>
+	<programMenuFolder>color/color_picker</programMenuFolder>
+	
+	<customUpdateUI>false</customUpdateUI>
+	<allowBrowserInvocation>false</allowBrowserInvocation>
+	<fileTypes>
+		<fileType>
+			<name>com.example</name>
+			<extension>xmpl</extension>
+			<description>Example file</description>
+			<contentType>example/x-data-type</contentType>
+			
+		</fileType>
+	</fileTypes>
+</application>
