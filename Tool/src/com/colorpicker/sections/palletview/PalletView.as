@@ -30,6 +30,12 @@ package com.colorpicker.sections.palletview {
 			
 		}
 		
+		public function destroy():void{
+			clearPalletView();
+			removeEventListener(PalletChipEvent.REMOVE_CHIP, onRemoveChip);
+			removeEventListener(PalletChipEvent.REPOSTION_CHIP, onRepositionChip);
+		}
+		
 		public function clearPalletView():void{
 			
 			var len:int = currentChips.length;

@@ -1,5 +1,6 @@
 ﻿package 
 {
+	import com.thesven.color.ColorSorting;
 	import com.colorpicker.clipboard.ClipboardCopy;
 	import com.bit101.components.PushButton;
 	import com.bit101.components.VBox;
@@ -29,6 +30,9 @@
 		private var mainControllContainer:VBox;
 		
 		private var imageLoadingButton:PushButton;
+		private var sortHSLButton:PushButton;
+		private var sortHSVButton:PushButton;
+		private var sortCIELABButton:PushButton;
 		private var gridViewButton:PushButton;
 		private var swarmViewButton:PushButton;
 		private var copyToClipBoard:PushButton;
@@ -54,7 +58,7 @@
 			stage.align = StageAlign.TOP_LEFT;
 			
 			mainControllWindow = new Window();
-			mainControllWindow.setSize(200, 200);
+			mainControllWindow.setSize(200, 210);
 			mainControllWindow.draggable = false;
 			mainControllWindow.move(10, 10);
 			mainControllWindow.title = "Main Controll";
@@ -70,6 +74,27 @@
 			imageLoadingButton.setSize(180, 20);
 			imageLoadingButton.addEventListener(MouseEvent.CLICK, onImageLoadButtonClick);
 			mainControllContainer.addChild(imageLoadingButton);
+			
+			sortHSLButton = new PushButton();
+			sortHSLButton.label = "Sort on HSL Values";
+			sortHSLButton.x = 10;
+			sortHSLButton.setSize(180, 20);
+			sortHSLButton.addEventListener(MouseEvent.CLICK, onSortButtonClick);
+			mainControllContainer.addChild(sortHSLButton);
+			
+			sortHSVButton = new PushButton();
+			sortHSVButton.label = "Sort on HSV Values";
+			sortHSVButton.x = 10;
+			sortHSVButton.setSize(180, 20);
+			sortHSVButton.addEventListener(MouseEvent.CLICK, onSortButtonClick);
+			mainControllContainer.addChild(sortHSVButton);
+			
+			sortCIELABButton = new PushButton();
+			sortCIELABButton.label = "Sort on LAB Values";
+			sortCIELABButton.x = 10;
+			sortCIELABButton.setSize(180, 20);
+			sortCIELABButton.addEventListener(MouseEvent.CLICK, onSortButtonClick);
+			mainControllContainer.addChild(sortCIELABButton);
 			
 			gridViewButton = new PushButton();
 			gridViewButton.label = "Use Grid View";
@@ -93,7 +118,7 @@
 			mainControllContainer.addChild(copyToClipBoard);
 			
 			palletViewWindow = new Window();
-			palletViewWindow.setSize(794, 200);
+			palletViewWindow.setSize(794, 210);
 			palletViewWindow.draggable = false;
 			palletViewWindow.move(220, 10);
 			palletViewWindow.title = "Pallet View";
@@ -102,8 +127,8 @@
 			hypeWindow = new Window();
 			hypeWindow.draggable = false;
 			hypeWindow.title = "Hype View";
-			hypeWindow.setSize(1004, 495);
-			hypeWindow.move(10, 220);
+			hypeWindow.setSize(1004, 485);
+			hypeWindow.move(10, 230);
 			addChild(hypeWindow);
 			
 		}
@@ -122,9 +147,7 @@
 		
 		private function onHypeViewButtonClick(e:MouseEvent) : void {
 		
-			var target:String = PushButton(e.target).label;
-			
-			switch(target){
+			switch(PushButton(e.target).label){
 				case "Use Grid View":
 					currentHypeViewType = GridView;
 					break;
@@ -135,6 +158,24 @@
 		
 			addHypeView();
 		
+		}
+		
+		private function onSortButtonClick(e : MouseEvent) : void {
+			
+			switch(PushButton(e.target).label){
+				case "Sort on HSL Values":
+					currentColorList.sort(ColorSorting.sortColorHSL);
+					break;
+				case "Sort on HSV Values":
+					currentColorList.sort(ColorSorting.sortColorHSV);
+					break;
+				case "Sort on LAB Values":
+					currentColorList.sort(ColorSorting.sortColorLAB);
+					break;
+			}
+			
+			if(palletView) initPalletView();
+			if(hypeView) hypeView.reset(currentColorList);
 		}
 
 		private function onImageDataReady(e : ImageLoadingEvent) : void {
@@ -149,6 +190,11 @@
 		}
 		
 		private function initPalletView():void{
+			
+			if(palletView){
+				palletView.destroy();
+				palletView = null; 
+			}
 			
 			palletView = new PalletView(currentColorList, palletViewWindow.width, palletViewWindow.height - 20);
 			palletView.addEventListener(PalletChangeEvent.PALLET_CHANGE, updateColors);
