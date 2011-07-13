@@ -8,19 +8,21 @@ package com.colorpicker.image.loading {
 	public class ImageLoadingEvent extends Event {
 		
 		public var data:ByteArray;
+		public var extension:String;
 		
-		public static const GIF_IMAGE_LOADED:String = "GIF_IMAGE_LOADED";
+		public static const IMAGE_LOADED:String = "IMAGE_LOADED";
 		
-		public function ImageLoadingEvent(type : String, imageData:ByteArray, bubbles : Boolean = false, cancelable : Boolean = false) {
+		public function ImageLoadingEvent(type : String, imageData:ByteArray, fileExtension:String, bubbles : Boolean = false, cancelable : Boolean = false) {
 			
 			data = imageData;
+			extension = fileExtension;
 			
 			super(type, bubbles, cancelable);
 		}
 		
 		
 		override public function clone() : Event {
-			return new ImageLoadingEvent(type, data, bubbles, cancelable);
+			return new ImageLoadingEvent(type, data, extension, bubbles, cancelable);
 		}
 		
 	}

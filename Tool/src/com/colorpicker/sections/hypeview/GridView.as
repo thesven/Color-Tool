@@ -1,4 +1,5 @@
 package com.colorpicker.sections.hypeview {
+	import com.colorpicker.sections.hypeview.utils.HypeViewUtils;
 	import hype.extended.color.ColorPool;
 	import hype.extended.layout.GridLayout;
 	import hype.framework.core.ObjectPool;
@@ -23,13 +24,15 @@ package com.colorpicker.sections.hypeview {
 
 		public function init(colorList : Vector.<String>) : void {
 			
-			layout = new GridLayout(50, 60, 50, 50, 19);
+			layout = new GridLayout(52, 35, 50, 50, 19);
 			objPool = new ObjectPool([Geo01, Geo02, Geo03, Geo04, Geo05], 152);
 			
 			objPool.onRequestObject = onPoolRequest;
 			objPool.onReleaseObject = onPoolRelease;
 			
-			setColorPool(colorList);
+			colorPool = new ColorPool();
+			HypeViewUtils.setColorPool(colorList, colorPool);
+			
 			objPool.requestAll();
 			
 		}
@@ -46,16 +49,6 @@ package com.colorpicker.sections.hypeview {
 			colorPool = null;
 			layout = null;
 			objPool.destroy();
-		}
-		
-		private function setColorPool(colorList : Vector.<String>):void{
-			
-			colorPool = new ColorPool();
-			for each(var color:String in colorList){
-				var c:uint = uint(color);
-				colorPool.addColor(c);
-			}
-			
 		}
 		
 		private function onPoolRequest(clip:MovieClip):void{

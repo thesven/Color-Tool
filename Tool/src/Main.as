@@ -1,10 +1,11 @@
 ﻿package 
 {
-	import com.thesven.color.ColorSorting;
-	import com.colorpicker.clipboard.ClipboardCopy;
+	import com.bit101.components.Label;
+	import com.bit101.components.HSlider;
 	import com.bit101.components.PushButton;
 	import com.bit101.components.VBox;
 	import com.bit101.components.Window;
+	import com.colorpicker.clipboard.ClipboardCopy;
 	import com.colorpicker.image.loading.ImageLoader;
 	import com.colorpicker.image.loading.ImageLoadingEvent;
 	import com.colorpicker.sections.hypeview.GridView;
@@ -12,9 +13,14 @@
 	import com.colorpicker.sections.interfaces.IHypeView;
 	import com.colorpicker.sections.palletview.PalletView;
 	import com.colorpicker.sections.palletview.events.PalletChangeEvent;
+	import com.thesven.color.ColorSorting;
 	import com.thesven.image.gif.colortable.GIFColorTableReader;
+	import com.thesven.image.jpeg.colortable.JPEGAverageColorTable;
 
+	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
+	import flash.display.Loader;
+	import flash.display.LoaderInfo;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -30,6 +36,8 @@
 		private var mainControllContainer:VBox;
 		
 		private var imageLoadingButton:PushButton;
+		private var jpegLabel:Label;
+		private var jpegSlider:HSlider;
 		private var sortHSLButton:PushButton;
 		private var sortHSVButton:PushButton;
 		private var sortCIELABButton:PushButton;
@@ -43,6 +51,8 @@
 		private var hypeWindow:Window;
 		private var hypeView:IHypeView;
 		private var currentHypeViewType:Class = GridView;
+		
+		private var jpegAverageAmount:int = 32;
 		
 		private var currentColorList:Vector.<String>;
 		
@@ -58,7 +68,7 @@
 			stage.align = StageAlign.TOP_LEFT;
 			
 			mainControllWindow = new Window();
-			mainControllWindow.setSize(200, 210);
+			mainControllWindow.setSize(200, 255);
 			mainControllWindow.draggable = false;
 			mainControllWindow.move(10, 10);
 			mainControllWindow.title = "Main Controll";
@@ -69,15 +79,26 @@
 			mainControllWindow.content.addChild(mainControllContainer);
 			
 			imageLoadingButton = new PushButton();
-			imageLoadingButton.label = "Load Image";
+			imageLoadingButton.label = "Load Image (jpeg or gif)";
 			imageLoadingButton.x = 10;
 			imageLoadingButton.setSize(180, 20);
 			imageLoadingButton.addEventListener(MouseEvent.CLICK, onImageLoadButtonClick);
 			mainControllContainer.addChild(imageLoadingButton);
 			
+			jpegLabel = new Label();
+			jpegLabel.text = "Averaging " + jpegAverageAmount + " colors for jpeg";
+			jpegLabel.x = 10;
+			mainControllContainer.addChild(jpegLabel);
+			
+			jpegSlider = new HSlider(mainControllContainer, 10, 45, onJpegSlider);
+			jpegSlider.maximum = 256;
+			jpegSlider.setSize(180, 20);
+			jpegSlider.setSliderParams(8, 256, 32);
+			
 			sortHSLButton = new PushButton();
 			sortHSLButton.label = "Sort on HSL Values";
 			sortHSLButton.x = 10;
+			sortHSLButton.y = 80;
 			sortHSLButton.setSize(180, 20);
 			sortHSLButton.addEventListener(MouseEvent.CLICK, onSortButtonClick);
 			mainControllContainer.addChild(sortHSLButton);
@@ -118,7 +139,7 @@
 			mainControllContainer.addChild(copyToClipBoard);
 			
 			palletViewWindow = new Window();
-			palletViewWindow.setSize(794, 210);
+			palletViewWindow.setSize(794, 255);
 			palletViewWindow.draggable = false;
 			palletViewWindow.move(220, 10);
 			palletViewWindow.title = "Pallet View";
@@ -127,10 +148,15 @@
 			hypeWindow = new Window();
 			hypeWindow.draggable = false;
 			hypeWindow.title = "Hype View";
-			hypeWindow.setSize(1004, 485);
-			hypeWindow.move(10, 230);
+			hypeWindow.setSize(1004, 440);
+			hypeWindow.move(10, 275);
 			addChild(hypeWindow);
 			
+		}
+
+		private function onJpegSlider(e:Event) : void {
+			jpegAverageAmount = jpegSlider.rawValue;
+			jpegLabel.text = "Averaging " + jpegAverageAmount + " colors for jpeg";
 		}
 
 		private function onDoListCopy(e:MouseEvent) : void {
@@ -140,7 +166,7 @@
 		private function onImageLoadButtonClick(e:MouseEvent):void{
 			
 			var imageLoader:ImageLoader = new ImageLoader();
-			imageLoader.addEventListener(ImageLoadingEvent.GIF_IMAGE_LOADED, onImageDataReady);
+			imageLoader.addEventListener(ImageLoadingEvent.IMAGE_LOADED, onImageDataReady);
 			if(palletView) palletView.clearPalletView();
 			
 		}
@@ -180,13 +206,43 @@
 
 		private function onImageDataReady(e : ImageLoadingEvent) : void {
 			
-			currentColorList = GIFColorTableReader.readTable(e.data);
 			
-			ImageLoader(e.target).removeEventListener(ImageLoadingEvent.GIF_IMAGE_LOADED, onImageDataReady);
+			if(e.extension == "jpg" || e.extension == "jpeg"){
+				
+				var loader:Loader = new Loader();
+				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, jpegLoaded);
+				loader.loadBytes(e.data);
 			
+			} else if(e.extension == "gif"){
+			
+				currentColorList = GIFColorTableReader.readTable(e.data);
+				addViews();
+				
+			} else {
+			
+				throw new Error('Your Image was of an unkown extension');
+			
+			}
+			
+			ImageLoader(e.target).removeEventListener(ImageLoadingEvent.IMAGE_LOADED, onImageDataReady);
+			
+		}
+
+		private function jpegLoaded(e : Event) : void {
+			
+			var target:LoaderInfo = LoaderInfo(e.target);
+			target.removeEventListener(Event.COMPLETE, jpegLoaded);
+			
+			var bmd:BitmapData = new BitmapData(target.width, target.height);
+			bmd.draw(target.content);
+			currentColorList = JPEGAverageColorTable.averageColours(bmd, jpegAverageAmount);
+			
+			addViews();
+		}
+		
+		private function addViews():void{
 			initPalletView();
 			addHypeView();
-			
 		}
 		
 		private function initPalletView():void{

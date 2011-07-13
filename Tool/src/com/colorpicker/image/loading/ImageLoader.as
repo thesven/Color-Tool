@@ -1,3 +1,4 @@
+//http://blog.soulwire.co.uk/code/actionscript-3/extract-average-colours-from-bitmapdata
 package com.colorpicker.image.loading {
 	import flash.events.ProgressEvent;
 	import flash.net.FileFilter;
@@ -14,6 +15,7 @@ package com.colorpicker.image.loading {
 	public class ImageLoader extends EventDispatcher {
 		
 		private var fileRef:FileReference;
+		private var extension:String;
 		
 		public function ImageLoader() {
 	
@@ -25,7 +27,7 @@ package com.colorpicker.image.loading {
 			
 			fileRef = new FileReference();
 			fileRef.addEventListener(Event.SELECT, onFileSelect);
-			fileRef.browse([new FileFilter("Images", "*.gif;")]);
+			fileRef.browse([new FileFilter("Images", "*.gif;*.jpg;*.jpeg;")]);
 			
 		}
 		
@@ -34,6 +36,9 @@ package com.colorpicker.image.loading {
 			fileRef.removeEventListener(Event.SELECT, onFileSelect);
 			fileRef.addEventListener(Event.COMPLETE, onFileLoadComplete);
 			fileRef.addEventListener(ProgressEvent.PROGRESS, onFileLoadProgress);
+			
+			extension = fileRef.extension;
+			
 			fileRef.load();
 		
 		}
@@ -43,9 +48,7 @@ package com.colorpicker.image.loading {
 			fileRef.removeEventListener(Event.COMPLETE, onFileLoadComplete);
 			fileRef.removeEventListener(ProgressEvent.PROGRESS, onFileLoadProgress);
 			
-			trace(fileRef.data);
-			
-			dispatchEvent(new ImageLoadingEvent(ImageLoadingEvent.GIF_IMAGE_LOADED, fileRef.data, true, false));
+			dispatchEvent(new ImageLoadingEvent(ImageLoadingEvent.IMAGE_LOADED, fileRef.data, extension, true, false));
 			
 		}
 

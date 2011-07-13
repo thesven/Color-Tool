@@ -38,14 +38,16 @@ package com.colorpicker.sections.palletview {
 		
 		public function clearPalletView():void{
 			
-			var len:int = currentChips.length;
-			var i:int = 0;
-			for(i; i < len; i++){
-				removeChild(currentChips[i]);
+			if(currentChips != null){
+				var len:int = currentChips.length;
+				var i:int = 0;
+				for(i; i < len; i++){
+					removeChild(currentChips[i]);
+				}
+				
+				currentChips = null;
+				currentColors = null;
 			}
-			
-			currentChips = null;
-			currentColors = null;
 			
 		}
 
