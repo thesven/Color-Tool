@@ -15,7 +15,7 @@ package com.colorpicker.sections.paletteview {
 		private var theHeight:int;
 		private var xPos:Number;
 		
-		public function PaletteChip(chipColor:uint, chipID:int, chipWidth:Number, chipHeight:int, chipPos:Number) {
+		public function PaletteChip(chipColor:uint, chipID:int, chipWidth:Number, chipHeight:Number, chipPos:Number) {
 			
 			color = chipColor;
 			id = chipID;
