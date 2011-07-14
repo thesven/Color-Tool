@@ -1,30 +1,30 @@
-package com.colorpicker.sections.palletview {
-	import com.colorpicker.sections.palletview.events.PalletChangeEvent;
-	import com.colorpicker.sections.palletview.events.PalletChipEvent;
-
+package com.colorpicker.sections.paletteview {
+	import com.colorpicker.sections.paletteview.events.PaletteChangeEvent;
+	import com.colorpicker.sections.paletteview.events.PaletteChipEvent;
 	import flash.display.Sprite;
+
 
 
 	/**
 	 * @author mikesven
 	 */
-	public class PalletView extends Sprite {
+	public class PaletteView extends Sprite {
 		
 		private var theWidth:int;
 		private var theHeight:int;
 		
 		private var currentColors:Vector.<String>;
-		private var currentChips:Vector.<PalletChip>;
+		private var currentChips:Vector.<PaletteChip>;
 		private var currentChipWidth:Number;
 		
-		public function PalletView(colorList:Vector.<String>, palletWidth:int, palletHeight:int) {
+		public function PaletteView(colorList:Vector.<String>, palletWidth:int, palletHeight:int) {
 			
 			theWidth = palletWidth;
 			theHeight = palletHeight;
 			
 			currentColors = colorList;
-			addEventListener(PalletChipEvent.REMOVE_CHIP, onRemoveChip);
-			addEventListener(PalletChipEvent.REPOSTION_CHIP, onRepositionChip);
+			addEventListener(PaletteChipEvent.REMOVE_CHIP, onRemoveChip);
+			addEventListener(PaletteChipEvent.REPOSTION_CHIP, onRepositionChip);
 			
 			init();	
 			
@@ -32,8 +32,8 @@ package com.colorpicker.sections.palletview {
 		
 		public function destroy():void{
 			clearPalletView();
-			removeEventListener(PalletChipEvent.REMOVE_CHIP, onRemoveChip);
-			removeEventListener(PalletChipEvent.REPOSTION_CHIP, onRepositionChip);
+			removeEventListener(PaletteChipEvent.REMOVE_CHIP, onRemoveChip);
+			removeEventListener(PaletteChipEvent.REPOSTION_CHIP, onRepositionChip);
 		}
 		
 		public function clearPalletView():void{
@@ -57,7 +57,7 @@ package com.colorpicker.sections.palletview {
 			currentChipWidth = theWidth / chipCount;
 			
 			if(currentChips == null){
-				currentChips = new Vector.<PalletChip>();
+				currentChips = new Vector.<PaletteChip>();
 				currentColors.forEach(createChip);
 			} else {
 				currentChips.forEach(redrawChip);
@@ -68,23 +68,21 @@ package com.colorpicker.sections.palletview {
 		
 		private function createChip(color:String, index:int, vec:Vector.<String>):void{
 			
-			var chip:PalletChip = new PalletChip(uint(color), index, currentChipWidth, theHeight, currentChipWidth * index);
+			var chip:PaletteChip = new PaletteChip(uint(color), index, currentChipWidth, theHeight, currentChipWidth * index);
 			currentChips.push(chip);
 			
 			addChild(chip);
 			
 		}
 		
-		private function redrawChip(color:PalletChip, index:int, vec:Vector.<PalletChip>):void{
+		private function redrawChip(color:PaletteChip, index:int, vec:Vector.<PaletteChip>):void{
 			
 			color.update(index, index * currentChipWidth, currentChipWidth);
 			addChild(color);
 			
 		}
 		
-		private function onRemoveChip(e:PalletChipEvent):void{
-			
-			trace('remove item ::', e.chipID);
+		private function onRemoveChip(e:PaletteChipEvent):void{
 			
 			currentChips.forEach(removeAllChips);
 			
@@ -94,25 +92,23 @@ package com.colorpicker.sections.palletview {
 			currentChips.splice(e.chipID, 1);
 			currentColors.splice(e.chipID, 1);
 			
-			trace('current colors ::', currentColors);
-			
-			dispatchEvent(new PalletChangeEvent(PalletChangeEvent.PALLET_CHANGE, currentColors, true, false));
+			dispatchEvent(new PaletteChangeEvent(PaletteChangeEvent.PALLET_CHANGE, currentColors, true, false));
 			
 			init();
 			
 			
 		}
 		
-		private function onRepositionChip(e:PalletChipEvent):void{
+		private function onRepositionChip(e:PaletteChipEvent):void{
 			
 			var targetID:int = e.chipID;
-			var targetChip:PalletChip = currentChips[targetID];
+			var targetChip:PaletteChip = currentChips[targetID];
 			
 			var i:int = 0;
 			var max:int = currentChips.length;
 			for(i; i < max; i++){
 				
-				var chip:PalletChip = currentChips[i];
+				var chip:PaletteChip = currentChips[i];
 				
 				if(chip.getBounds(this).contains(targetChip.x, targetChip.y) && chip.chipID != targetID){
 					insertItemAt(targetID, chip.chipID);
@@ -126,13 +122,13 @@ package com.colorpicker.sections.palletview {
 			
 		}
 		
-		private function removeAllChips(color:PalletChip, index:int, vec:Vector.<PalletChip>):void{
+		private function removeAllChips(color:PaletteChip, index:int, vec:Vector.<PaletteChip>):void{
 			removeChild(color);
 		}
 		
 		private function insertItemAt(item:int, positionB:int):void{
 			
-			var tempChip:PalletChip = currentChips[item];
+			var tempChip:PaletteChip = currentChips[item];
 			currentChips.splice(item, 1);
 			currentChips.splice(positionB, 0, tempChip);
 			
@@ -140,7 +136,7 @@ package com.colorpicker.sections.palletview {
 			currentColors.splice(item, 1);
 			currentColors.splice(positionB, 0, tempColor);
 			
-			dispatchEvent(new PalletChangeEvent(PalletChangeEvent.PALLET_CHANGE, currentColors, true, false));
+			dispatchEvent(new PaletteChangeEvent(PaletteChangeEvent.PALLET_CHANGE, currentColors, true, false));
 			
 		}
 		

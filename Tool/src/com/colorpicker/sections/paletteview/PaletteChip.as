@@ -1,5 +1,5 @@
-package com.colorpicker.sections.palletview {
-	import com.colorpicker.sections.palletview.events.PalletChipEvent;
+package com.colorpicker.sections.paletteview {
+	import com.colorpicker.sections.paletteview.events.PaletteChipEvent;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
@@ -7,7 +7,7 @@ package com.colorpicker.sections.palletview {
 	/**
 	 * @author mikesven
 	 */
-	public class PalletChip extends Sprite {
+	public class PaletteChip extends Sprite {
 		
 		private var color:uint;
 		private var id:int;
@@ -15,7 +15,7 @@ package com.colorpicker.sections.palletview {
 		private var theHeight:int;
 		private var xPos:Number;
 		
-		public function PalletChip(chipColor:uint, chipID:int, chipWidth:Number, chipHeight:int, chipPos:Number) {
+		public function PaletteChip(chipColor:uint, chipID:int, chipWidth:Number, chipHeight:int, chipPos:Number) {
 			
 			color = chipColor;
 			id = chipID;
@@ -58,8 +58,8 @@ package com.colorpicker.sections.palletview {
 
 		private function onMouseDown(e : MouseEvent) : void {
 			
-			PalletView(this.parent).addChild(this);
-			var bounds:Rectangle = PalletView(this.parent).getBounds(this.parent);
+			PaletteView(this.parent).addChild(this);
+			var bounds:Rectangle = PaletteView(this.parent).getBounds(this.parent);
 			bounds.height = 1;
 			this.startDrag(false, bounds);;
 			
@@ -68,7 +68,7 @@ package com.colorpicker.sections.palletview {
 		private function onMouseUp(e : MouseEvent) : void {
 			this.stopDrag();
 			if(this.x != xPos){
-				dispatchEvent(new PalletChipEvent(PalletChipEvent.REPOSTION_CHIP, id, true, false));
+				dispatchEvent(new PaletteChipEvent(PaletteChipEvent.REPOSTION_CHIP, id, true, false));
 			}
 		}
 		
@@ -84,7 +84,7 @@ package com.colorpicker.sections.palletview {
 		
 		private function onDoubleClick(e:MouseEvent):void{
 			
-			dispatchEvent(new PalletChipEvent(PalletChipEvent.REMOVE_CHIP, id, true, false));
+			dispatchEvent(new PaletteChipEvent(PaletteChipEvent.REMOVE_CHIP, id, true, false));
 			
 		}
 		

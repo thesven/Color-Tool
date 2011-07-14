@@ -1,7 +1,7 @@
 ﻿package 
 {
-	import com.bit101.components.Label;
 	import com.bit101.components.HSlider;
+	import com.bit101.components.Label;
 	import com.bit101.components.PushButton;
 	import com.bit101.components.VBox;
 	import com.bit101.components.Window;
@@ -11,8 +11,8 @@
 	import com.colorpicker.sections.hypeview.GridView;
 	import com.colorpicker.sections.hypeview.SwarmView;
 	import com.colorpicker.sections.interfaces.IHypeView;
-	import com.colorpicker.sections.palletview.PalletView;
-	import com.colorpicker.sections.palletview.events.PalletChangeEvent;
+	import com.colorpicker.sections.paletteview.PaletteView;
+	import com.colorpicker.sections.paletteview.events.PaletteChangeEvent;
 	import com.thesven.color.ColorSorting;
 	import com.thesven.image.gif.colortable.GIFColorTableReader;
 	import com.thesven.image.jpeg.colortable.JPEGAverageColorTable;
@@ -28,8 +28,9 @@
 	import flash.events.MouseEvent;
 
 
+
 	[SWF(backgroundColor="#000000", frameRate="31", width="1024", height="768")]
-	public class Main extends Sprite
+	public class ColorPickingTool extends Sprite
 	{
 		
 		private var mainControllWindow:Window;
@@ -45,8 +46,8 @@
 		private var swarmViewButton:PushButton;
 		private var copyToClipBoard:PushButton;
 		
-		private var palletViewWindow:Window;
-		private var palletView:PalletView;
+		private var paletteViewWindow:Window;
+		private var paletteView:PaletteView;
 		
 		private var hypeWindow:Window;
 		private var hypeView:IHypeView;
@@ -56,7 +57,7 @@
 		
 		private var currentColorList:Vector.<String>;
 		
-		public function Main()
+		public function ColorPickingTool()
 		{
 			addEventListener(Event.ADDED_TO_STAGE, init);
 		}
@@ -138,12 +139,12 @@
 			copyToClipBoard.addEventListener(MouseEvent.CLICK, onDoListCopy);
 			mainControllContainer.addChild(copyToClipBoard);
 			
-			palletViewWindow = new Window();
-			palletViewWindow.setSize(794, 255);
-			palletViewWindow.draggable = false;
-			palletViewWindow.move(220, 10);
-			palletViewWindow.title = "Pallet View";
-			addChild(palletViewWindow);
+			paletteViewWindow = new Window();
+			paletteViewWindow.setSize(794, 255);
+			paletteViewWindow.draggable = false;
+			paletteViewWindow.move(220, 10);
+			paletteViewWindow.title = "Palette View";
+			addChild(paletteViewWindow);
 			
 			hypeWindow = new Window();
 			hypeWindow.draggable = false;
@@ -167,7 +168,7 @@
 			
 			var imageLoader:ImageLoader = new ImageLoader();
 			imageLoader.addEventListener(ImageLoadingEvent.IMAGE_LOADED, onImageDataReady);
-			if(palletView) palletView.clearPalletView();
+			if(paletteView) paletteView.clearPalletView();
 			
 		}
 		
@@ -200,7 +201,7 @@
 					break;
 			}
 			
-			if(palletView) initPalletView();
+			if(paletteView) initPalletView();
 			if(hypeView) hypeView.reset(currentColorList);
 		}
 
@@ -247,14 +248,14 @@
 		
 		private function initPalletView():void{
 			
-			if(palletView){
-				palletView.destroy();
-				palletView = null; 
+			if(paletteView){
+				paletteView.destroy();
+				paletteView = null; 
 			}
 			
-			palletView = new PalletView(currentColorList, palletViewWindow.width, palletViewWindow.height - 20);
-			palletView.addEventListener(PalletChangeEvent.PALLET_CHANGE, updateColors);
-			palletViewWindow.content.addChild(palletView);
+			paletteView = new PaletteView(currentColorList, paletteViewWindow.width, paletteViewWindow.height - 20);
+			paletteView.addEventListener(PaletteChangeEvent.PALLET_CHANGE, updateColors);
+			paletteViewWindow.content.addChild(paletteView);
 			
 		}
 		
@@ -272,9 +273,7 @@
 			
 		}
 		
-		private function updateColors(e:PalletChangeEvent):void{
-			
-			trace('Color Pallet List Length ::',e.pallet.length);
+		private function updateColors(e:PaletteChangeEvent):void{
 			
 			currentColorList = e.pallet;
 			if(hypeView) hypeView.reset(currentColorList);
