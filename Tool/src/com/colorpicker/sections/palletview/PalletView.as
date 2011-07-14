@@ -84,6 +84,8 @@ package com.colorpicker.sections.palletview {
 		
 		private function onRemoveChip(e:PalletChipEvent):void{
 			
+			trace('remove item ::', e.chipID);
+			
 			currentChips.forEach(removeAllChips);
 			
 			currentChips[e.chipID].destroy();
@@ -91,6 +93,8 @@ package com.colorpicker.sections.palletview {
 			
 			currentChips.splice(e.chipID, 1);
 			currentColors.splice(e.chipID, 1);
+			
+			trace('current colors ::', currentColors);
 			
 			dispatchEvent(new PalletChangeEvent(PalletChangeEvent.PALLET_CHANGE, currentColors, true, false));
 			

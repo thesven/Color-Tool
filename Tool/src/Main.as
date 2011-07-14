@@ -274,6 +274,8 @@
 		
 		private function updateColors(e:PalletChangeEvent):void{
 			
+			trace('Color Pallet List Length ::',e.pallet.length);
+			
 			currentColorList = e.pallet;
 			if(hypeView) hypeView.reset(currentColorList);
 			

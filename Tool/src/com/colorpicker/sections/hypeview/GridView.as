@@ -39,8 +39,12 @@ package com.colorpicker.sections.hypeview {
 
 		public function reset(colorList : Vector.<String>) : void {
 			
-			objPool.activeSet.forEach(startRelease);
-			init(colorList);
+			colorPool = new ColorPool();
+			for each(var color:String in colorList){
+				var c:uint = uint(color);
+				colorPool.addColor(c);
+			}
+			objPool.activeSet.forEach(reColor);
 			
 		}
 		
@@ -49,6 +53,10 @@ package com.colorpicker.sections.hypeview {
 			colorPool = null;
 			layout = null;
 			objPool.destroy();
+		}
+		
+		private function reColor(clip:MovieClip):void{
+			colorPool.colorChildren(clip);
 		}
 		
 		private function onPoolRequest(clip:MovieClip):void{

@@ -5,7 +5,7 @@
 	<version>1.0</version>
 	<filename>Main</filename>
 	<description>
-		<text xml:lang="en">An application to read GIF color tables, and use their data to create color pallets</text>
+		<text xml:lang="en">An application to read GIF color tables, and use their data to create color palettes</text>
 	</description>
 	<copyright>Copyright 2009, Example Co., Inc.</copyright>
 	<initialWindow>
