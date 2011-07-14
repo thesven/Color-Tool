@@ -25,12 +25,13 @@ package com.colorpicker.image.loading {
 
 		private function onLoadComplete(e : Event) : void {
 		
-			extension = file.extension;
+			extension = file.extension.toLocaleLowerCase();
 			
 			file.removeEventListener(Event.COMPLETE, onLoadComplete);
 			
 			dispatchEvent(new ImageLoadingEvent(ImageLoadingEvent.IMAGE_LOADED, file.data, extension, true, false));
 			
+			file = null;
 		}
 		
 		

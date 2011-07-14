@@ -27,7 +27,7 @@ package com.colorpicker.image.loading {
 			
 			fileRef = new FileReference();
 			fileRef.addEventListener(Event.SELECT, onFileSelect);
-			fileRef.browse([new FileFilter("Images", "*.gif;*.jpg;*.jpeg;")]);
+			fileRef.browse([new FileFilter("Images", "*.gif;*.jpg;*.jpeg;*.JPG;*.JPEG")]);
 			
 		}
 		
@@ -50,6 +50,7 @@ package com.colorpicker.image.loading {
 			
 			dispatchEvent(new ImageLoadingEvent(ImageLoadingEvent.IMAGE_LOADED, fileRef.data, extension, true, false));
 			
+			fileRef = null;
 		}
 
 		private function onFileLoadProgress(e : ProgressEvent) : void {

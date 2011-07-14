@@ -1,5 +1,7 @@
 ﻿package 
 {
+	import net.hires.debug.Stats;
+
 	import com.bit101.components.HSlider;
 	import com.bit101.components.Label;
 	import com.bit101.components.PushButton;
@@ -217,13 +219,13 @@
 		private function onImageDataReady(e : ImageLoadingEvent) : void {
 			
 			
-			if(e.extension == "jpg" || e.extension == "jpeg"){
+			if(e.extension == "jpg" || e.extension == "jpeg" || e.extension == "JPEG" || e.extension == "JPG"){
 				
 				var loader:Loader = new Loader();
 				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, jpegLoaded);
 				loader.loadBytes(e.data);
 			
-			} else if(e.extension == "gif"){
+			} else if(e.extension == "gif" || e.extension == "GIF"){
 			
 				currentColorList = GIFColorTableReader.readTable(e.data);
 				addViews();
