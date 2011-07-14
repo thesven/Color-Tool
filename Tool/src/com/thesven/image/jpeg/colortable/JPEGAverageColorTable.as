@@ -22,7 +22,7 @@ package com.thesven.image.jpeg.colortable {
 			var w:int = Math.round( source.width / columns );
 			var h:int = Math.round( source.height / columns );
 		
-			for (var i:int = 0; i < colours; i++)
+			for (var i:int = 0; i <= colours; i++)
 			{
 				var rect:Rectangle = new Rectangle( x, y, w, h );
 		
