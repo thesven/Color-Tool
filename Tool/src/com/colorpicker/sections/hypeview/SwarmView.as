@@ -26,7 +26,7 @@ package com.colorpicker.sections.hypeview {
 		public function init(colorList : Vector.<String>) : void {
 			
 			
-			objPool = new ObjectPool([Geo01, Geo02, Geo03, Geo04, Geo05], 5);
+			objPool = new ObjectPool([Geo01, Geo02, Geo03, Geo04, Geo05], 25);
 			
 			colorPool = new ColorPool();
 			HypeViewUtils.setColorPool(colorList, colorPool);
