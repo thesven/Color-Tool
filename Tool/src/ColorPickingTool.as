@@ -6,6 +6,7 @@
 	import com.bit101.components.VBox;
 	import com.bit101.components.Window;
 	import com.colorpicker.clipboard.ClipboardCopy;
+	import com.colorpicker.image.loading.DragImageLoader;
 	import com.colorpicker.image.loading.ImageLoader;
 	import com.colorpicker.image.loading.ImageLoadingEvent;
 	import com.colorpicker.sections.hypeview.GridView;
@@ -17,6 +18,8 @@
 	import com.thesven.image.gif.colortable.GIFColorTableReader;
 	import com.thesven.image.jpeg.colortable.JPEGAverageColorTable;
 
+	import flash.desktop.ClipboardFormats;
+	import flash.desktop.NativeDragManager;
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.Loader;
@@ -26,6 +29,7 @@
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.events.NativeDragEvent;
 
 
 
@@ -56,6 +60,8 @@
 		private var jpegAverageAmount:int = 32;
 		
 		private var currentColorList:Vector.<String>;
+		
+		private const fileTypes:Array = ["jpg", "gif", "jpeg"];
 		
 		public function ColorPickingTool()
 		{
@@ -153,6 +159,9 @@
 			hypeWindow.move(10, 275);
 			addChild(hypeWindow);
 			
+			addEventListener(NativeDragEvent.NATIVE_DRAG_ENTER, onDragEnter);
+			addEventListener(NativeDragEvent.NATIVE_DRAG_DROP, onDragDrop);
+			
 		}
 
 		private function onJpegSlider(e:Event) : void {
@@ -225,7 +234,8 @@
 			
 			}
 			
-			ImageLoader(e.target).removeEventListener(ImageLoadingEvent.IMAGE_LOADED, onImageDataReady);
+			if(e.target is ImageLoader) ImageLoader(e.target).removeEventListener(ImageLoadingEvent.IMAGE_LOADED, onImageDataReady);
+			if(e.target is DragImageLoader) DragImageLoader(e.target).removeEventListener(ImageLoadingEvent.IMAGE_LOADED, onImageDataReady);
 			
 		}
 
@@ -277,6 +287,47 @@
 			
 			currentColorList = e.pallet;
 			if(hypeView) hypeView.reset(currentColorList);
+			
+		}
+		
+		private function onDragEnter(e:NativeDragEvent) : void {
+
+			removeEventListener(NativeDragEvent.NATIVE_DRAG_ENTER, onDragEnter);
+			
+			var fa:Array = e.clipboard.getData(ClipboardFormats.FILE_LIST_FORMAT) as Array;
+
+		     for(var i:int=0; i < fa.length; ++i)
+		      {
+		           var filesAcceptable:Boolean = checkExtension(fa[i].extension);
+		           if(!filesAcceptable){
+						addEventListener(NativeDragEvent.NATIVE_DRAG_ENTER, onDragEnter);
+				   		return;
+				   }
+				  
+		      }
+		
+		      NativeDragManager.acceptDragDrop(this);
+			
+		}
+		
+		private function checkExtension(ext:String):Boolean{
+		      var acceptable:Boolean = false;
+		      for(var i:int=0; i < fileTypes.length; ++i)
+		      {
+		           if(ext.toLowerCase() == fileTypes[i])
+		           {
+		                acceptable=true;
+		           }
+		      }
+		      return acceptable;
+		}
+
+		private function onDragDrop(e:NativeDragEvent) : void {
+			
+			addEventListener(NativeDragEvent.NATIVE_DRAG_ENTER, onDragEnter);
+			
+			var imageLoader:DragImageLoader = new DragImageLoader(e.clipboard.getData(ClipboardFormats.URL_FORMAT) as String);
+			imageLoader.addEventListener(ImageLoadingEvent.IMAGE_LOADED, onImageDataReady);
 			
 		}
 			
