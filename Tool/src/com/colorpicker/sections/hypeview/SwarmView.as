@@ -1,4 +1,7 @@
 package com.colorpicker.sections.hypeview {
+	import hype.framework.rhythm.SimpleRhythm;
+	import flash.geom.ColorTransform;
+	import hype.framework.display.BitmapCanvas;
 	import hype.extended.behavior.Swarm;
 	import hype.extended.color.ColorPool;
 	import hype.framework.core.ObjectPool;
@@ -18,6 +21,10 @@ package com.colorpicker.sections.hypeview {
 		
 		private var objPool:ObjectPool;
 		private var colorPool:ColorPool;
+		private var clipContainer:Sprite;
+		private var bmc:BitmapCanvas;
+		private var colorTrans:ColorTransform = new ColorTransform(1, 1, 1, 1, -1, -1, -1, -1);
+		private var fadeRhythm:SimpleRhythm;
 		
 		public function SwarmView() {
 			
@@ -34,6 +41,17 @@ package com.colorpicker.sections.hypeview {
 			objPool.onRequestObject = onPoolRequest;
 			objPool.onReleaseObject = onPoolRelease;
 			
+			clipContainer = new Sprite();
+			addChild(clipContainer);
+			clipContainer.visible = false;
+			
+			bmc = new BitmapCanvas(parent.parent.width, parent.parent.height, true);
+			addChild(bmc);
+			bmc.startCapture(clipContainer, true);
+			
+			fadeRhythm = new SimpleRhythm(fadeOut);
+			fadeRhythm.start();
+			
 			objPool.requestAll();
 		}
 
@@ -46,6 +64,8 @@ package com.colorpicker.sections.hypeview {
 		}
 
 		public function destroy() : void {
+			fadeRhythm.stop();
+			fadeRhythm = null;
 			objPool.activeSet.forEach(startRelease);
 			colorPool = null;
 			objPool.destroy();
@@ -66,7 +86,7 @@ package com.colorpicker.sections.hypeview {
 			var swarm:Swarm = new Swarm(clip, new Point(parent.parent.width / 2, parent.parent.height / 2), 10, 0.05, 20);
 			swarm.start();
 			swarm.store("swarm");
-			addChild(clip);
+			clipContainer.addChild(clip);
 			
 		}
 		
@@ -76,6 +96,12 @@ package com.colorpicker.sections.hypeview {
 		
 		private function onPoolRelease(clip:MovieClip):void{
 			removeChild(clip);
+		}
+		
+		private function fadeOut(r:SimpleRhythm):void{
+			
+			bmc.colorTransform(colorTrans);
+			
 		}
 		
 	}
